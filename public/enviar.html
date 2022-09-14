@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enviar archivo de JavaScript a Go</title>
+</head>
+
+<body>
+    <label for="archivo">Selecciona un archivo:</label>
+    <br>
+    <input type="file" id="archivo">
+    <br>
+    <br>
+    <button id="btnEnviar">Enviar</button>
+</body>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const $inputArchivo = document.querySelector("#archivo"),
+            $btnEnviar = document.querySelector("#btnEnviar");
+
+        $btnEnviar.onclick = async () => {
+            const archivos = $inputArchivo.files;
+            if (archivos.length <= 0) {
+                return alert("No hay archivos seleccionados");
+            }
+            const primerArchivo = archivos[0];
+            const formdata = new FormData();
+            formdata.append("archivo", primerArchivo);
+            const nombre = "Parzibyte";// Dato de tipo cadena para ejemplificar
+            formdata.append("nombre", nombre);
+            const URL_SERVIDOR = "http://localhost:8080/foto"; // Servidor de Go
+            try {
+                const response = await fetch(URL_SERVIDOR, {
+                    method: "POST",
+                    body: formdata,
+                });
+                const respuesta = await response.text();
+                alert("El servidor dijo: " + respuesta)
+            } catch (e) {
+                alert("Error en el servidor: " + e.message);
+            }
+        };
+
+    });
+</script>
+
+</html>
